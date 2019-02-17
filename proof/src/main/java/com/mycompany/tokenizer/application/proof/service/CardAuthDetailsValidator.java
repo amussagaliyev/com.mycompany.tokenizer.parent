@@ -2,6 +2,8 @@ package com.mycompany.tokenizer.application.proof.service;
 
 import java.util.Base64;
 
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.mycompany.beans.CardAuthDetails;
@@ -9,24 +11,23 @@ import com.mycompany.beans.TransactionCardAuthDetails;
 import com.mycompany.beans.TransactionToken;
 import com.mycompany.sdk.cipher.CipherProvider;
 import com.mycompany.sdk.cipher.JceCipher;
-import com.mycompany.sdk.queue.Queue;
 import com.mycompany.sdk.storage.Storage;
 
+@EnableKafka
 @Service
 public class CardAuthDetailsValidator
 {
-	private Queue<TransactionToken> outputQueue;
 	private Storage<String, String> redisStorage;
 	
-	public CardAuthDetailsValidator(Queue<TransactionToken> outputQueue, Storage<String, String> redisStorage)
+	public CardAuthDetailsValidator(Storage<String, String> redisStorage)
 	{
-		this.outputQueue = outputQueue;
 		this.redisStorage = redisStorage;
 	}
 
-	public void validate()
+	@KafkaListener(topics = "${com.mycompany.kafka.outputTopic}")
+	public void validate(TransactionToken transactionToken)
 	{
-		TransactionCardAuthDetails transactionCardAuthDetails = buildTransactionCardAuthDetailsFromToken(outputQueue.dequeue());
+		TransactionCardAuthDetails transactionCardAuthDetails = buildTransactionCardAuthDetailsFromToken(transactionToken);
 		System.out.println(transactionCardAuthDetails);
 	}
 	

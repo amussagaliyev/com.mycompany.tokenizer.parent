@@ -24,11 +24,6 @@
         </dependency>
         <dependency>
 		    <groupId>com.mycompany.sdk</groupId>
-		    <artifactId>queue</artifactId>
-        	<version>1.0.0</version>
-        </dependency>
-        <dependency>
-		    <groupId>com.mycompany.sdk</groupId>
 		    <artifactId>cipher</artifactId>
         	<version>1.0.0</version>
         </dependency>

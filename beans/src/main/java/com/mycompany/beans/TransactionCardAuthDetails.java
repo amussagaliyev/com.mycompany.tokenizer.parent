@@ -36,6 +36,7 @@ public class TransactionCardAuthDetails
 	@Override
 	public String toString()
 	{
-		return "{\"" + transactionId + "\":" + cardAuthDetails.toString() + "}";
+		return "{\"" + transactionId + "\":" + cardAuthDetails + "}";
 	}
+	
 }

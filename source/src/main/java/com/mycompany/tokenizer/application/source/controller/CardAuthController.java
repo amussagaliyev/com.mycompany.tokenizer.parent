@@ -2,6 +2,7 @@ package com.mycompany.tokenizer.application.source.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mycompany.beans.CardAuthDetails;
@@ -18,8 +19,8 @@ public class CardAuthController
 		this.cardAuthSubmitter = cardAuthSubmitter;
 	}
 
-	@PostMapping(path="/api/auth")
-	public CardAuthResponse auth(CardAuthDetails cardAuthDetails)
+	@PostMapping(path="/api/auth", consumes="application/json")
+	public CardAuthResponse auth(@RequestBody CardAuthDetails cardAuthDetails)
 	{
 		String trxId = cardAuthSubmitter.submit(cardAuthDetails);
 		return new CardAuthResponse(true, trxId);

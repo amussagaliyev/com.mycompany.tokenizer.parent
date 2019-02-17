@@ -7,22 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import com.mycompany.beans.CardAuthDetails;
 import com.mycompany.beans.TransactionCardAuthDetails;
 import com.mycompany.beans.TransactionToken;
 import com.mycompany.sdk.cipher.CipherProvider;
-import com.mycompany.sdk.queue.Queue;
 import com.mycompany.sdk.storage.Storage;
 import com.mycompany.tokenizer.application.flow.processor.CardAuthDetailsProcessor;
 
 public class CardAuthDetailsProcessorTest
 {
 	@Mock
-	private Queue<TransactionCardAuthDetails> inputQueue;
-
-	@Mock
-	private Queue<TransactionToken> outputQueue;
+	private KafkaTemplate<String, TransactionToken> outputQueue;
 	
 	@Mock
 	private CipherProvider cipherProvider;
@@ -41,12 +38,11 @@ public class CardAuthDetailsProcessorTest
 	public void testProcess()
 	{
 		TransactionCardAuthDetails transactionCardAuthDetails = buildTransactionCardAuthDetails();
-		Mockito.when(inputQueue.dequeue()).thenReturn(transactionCardAuthDetails);
 
 		Mockito.when(cipherProvider.getKeyAsBase64()).thenReturn("JYlMs/QH4DvlDauP6b/3GsfmRf6o6pTg");
 
-		CardAuthDetailsProcessor cardAuthDetailsProcessor = new CardAuthDetailsProcessor(inputQueue, outputQueue, cipherProvider, redisStorage);
-		cardAuthDetailsProcessor.process();
+		CardAuthDetailsProcessor cardAuthDetailsProcessor = new CardAuthDetailsProcessor(outputQueue, cipherProvider, redisStorage);
+		cardAuthDetailsProcessor.process(transactionCardAuthDetails);
 	}
 	
 	private TransactionCardAuthDetails buildTransactionCardAuthDetails()

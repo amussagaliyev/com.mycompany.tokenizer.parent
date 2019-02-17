@@ -26,7 +26,6 @@
         <module>proof</module>
         
         <module>cipher</module>
-        <module>queue</module>
         <module>beans</module>
         <module>storage</module>
     </modules>

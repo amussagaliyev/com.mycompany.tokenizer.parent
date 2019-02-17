@@ -13,15 +13,11 @@ import com.mycompany.beans.TransactionCardAuthDetails;
 import com.mycompany.beans.TransactionToken;
 import com.mycompany.sdk.cipher.CipherProvider;
 import com.mycompany.sdk.cipher.JceCipher;
-import com.mycompany.sdk.queue.Queue;
 import com.mycompany.sdk.storage.Storage;
 import com.mycompany.tokenizer.application.proof.service.CardAuthDetailsValidator;
 
 public class CardAuthDetailsValidatorTest
 {
-	@Mock
-	private Queue<TransactionToken> outputQueue;
-	
 	@Mock
 	private Storage<String, String> redisStorage;
 
@@ -42,11 +38,10 @@ public class CardAuthDetailsValidatorTest
 		
 		TransactionToken transactionToken = new TransactionToken(transactionId, buildToken(transactionCardAuthDetails, cipherProvider));
 		
-		Mockito.when(outputQueue.dequeue()).thenReturn(transactionToken);
 		Mockito.when(redisStorage.get(transactionToken.getTransactionId())).thenReturn(cipherProvider.getKeyAsBase64());
 		
-		CardAuthDetailsValidator validator = new CardAuthDetailsValidator(outputQueue, redisStorage);
-		validator.validate();
+		CardAuthDetailsValidator validator = new CardAuthDetailsValidator(redisStorage);
+		validator.validate(transactionToken);
 	}
 
 	private String buildToken(TransactionCardAuthDetails transactionCardAuthDetails, CipherProvider cipherProvider)

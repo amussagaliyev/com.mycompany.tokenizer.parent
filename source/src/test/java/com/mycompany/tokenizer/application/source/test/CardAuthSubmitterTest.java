@@ -7,10 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import com.mycompany.beans.CardAuthDetails;
 import com.mycompany.beans.TransactionCardAuthDetails;
-import com.mycompany.sdk.queue.Queue;
 import com.mycompany.tokenizer.application.source.service.CardAuthSubmitter;
 
 public class CardAuthSubmitterTest
@@ -23,7 +23,7 @@ public class CardAuthSubmitterTest
 	}
 
 	@Mock
-	private Queue<TransactionCardAuthDetails> inputQueue;
+	private KafkaTemplate<String, TransactionCardAuthDetails> inputQueue;
 
 	@Mock
 	private TransactionCardAuthDetails transactionCardAuthDetails;

@@ -8,11 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
-import com.mycompany.beans.CardAuthDetails;
-import com.mycompany.beans.TransactionToken;
-import com.mycompany.sdk.queue.KafkaQueue;
-import com.mycompany.sdk.queue.Queue;
 import com.mycompany.sdk.storage.RedisStorage;
 import com.mycompany.sdk.storage.Storage;
 
@@ -23,9 +20,10 @@ public class ProofApplication {
 	{
 		String configFile = System.getProperty("config.file");
 		if (configFile != null && (new File(configFile)).exists())
-			System.setProperty("spring.config.location", System.getProperty("config.file"));
+			System.setProperty("spring.config.location", "classpath:application.properties," + configFile);
 		else
-			throw new IllegalArgumentException("Path to configuration file is invalid. Set correct value for the \"config.file\" property.");
+			throw new IllegalArgumentException(
+					"Path to configuration file is invalid. Set correct value for the \"config.file\" property.");
 
 		SpringApplication.run(ProofApplication.class, args);
 	}
@@ -39,15 +37,9 @@ public class ProofApplication {
 	}
 	
 	@Bean
-	public Queue<TransactionToken> outputQueue() 
+	public Storage<String, String> redisStorage(RedisTemplate<String, String> redisTemplate) 
 	{
-	    return new KafkaQueue<>();
-	}
-
-	@Bean
-	public Storage<String, String> redisStorage() 
-	{
-	    return new RedisStorage<>();
+	    return new RedisStorage<>(redisTemplate);
 	}
 }
 
