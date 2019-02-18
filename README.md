@@ -3,10 +3,12 @@ Parent project for the payment processor
 
 ## Following properties should be provided within config file
 
+```
 redis.host=localhost
 redis.port=6379
 spring.kafka.consumer.bootstrap-servers=localhost:9092
 spring.kafka.producer.bootstrap-servers=localhost:9092
+```
 
 ## To build applications execute folowing command:
 
